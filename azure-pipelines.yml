@@ -3,11 +3,11 @@ name: Bicep Arm Deployment Pipeline Test
 parameters:
 - name: azureServiceConnection
   type: string
-  default: 'pp-tst-appservices-sc'
+  default: 'tst-appservices-sc'
 
 variables:
   vmImageName: 'ubuntu-latest'
-  resourceGroupName: 'PP-TST-AppServices-rg'
+  resourceGroupName: 'TST-AppServices-rg'
   location: 'Australia Southeast'
   templateFile: './deploy-test.bicep'
 
@@ -29,4 +29,4 @@ steps:
     overrideParameters: '-version "$(Build.BuildNumber)" -gitCommit "$(Build.SourceVersion)" -builtBy "$(Build.RequestedForEmail)"'
     deploymentMode: 'Incremental'
     deploymentName: 'DeployAppServicesTstPipelineTemplate'
-    subscriptionId: '923d30f5-7a82-4c1d-b5fa-8f441e23dd8b'  
+    subscriptionId: 'dummysubsciprtionId'  
