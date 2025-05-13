@@ -1,7 +1,7 @@
 param mongoDbAccountName string = 'mongoAccount-tst-${uniqueString(resourceGroup().id)}'
 param location string = resourceGroup().location
 param tags object = {
-  BuiltBy:'daniel.mitchell@pitcher.com.au'
+  BuiltBy:'daniel.mitchell@company.com.au'
   Version:'0.1'
   Description:'Azure Web Stack Test'
   Environment: 'Test'

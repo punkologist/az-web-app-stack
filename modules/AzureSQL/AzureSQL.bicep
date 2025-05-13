@@ -45,7 +45,7 @@ resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
     // administrators:{
     //   administratorType:'ActiveDirectory'
     //   principalType:'User'
-    //   login:'daniel.mitchell@pitcher.com.au'
+    //   login:'daniel.mitchell@company.com.au'
     //   sid:objectId
 
     // }

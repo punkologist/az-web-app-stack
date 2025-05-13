@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 
 @description('Tags - with defaults')
 param tags object = {
-  BuiltBy:'daniel.mitchell@pitcher.com.au'
+  BuiltBy:'daniel.mitchell@company.com.au'
   Version:'0.1'
   Description:'Azure Web Stack Test'
   Environment: 'Test'

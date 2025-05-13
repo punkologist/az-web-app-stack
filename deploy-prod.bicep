@@ -20,13 +20,13 @@ var appsVirtualNetworkRgName = 'dummyNetworkRg'
 var appGwHttpSettingNameHttps = 'dummyHttpSetting_443'
 var appGwHttpSettingNameCustomDomain = 'dummyHttpsSetting_'
 var defaultDomainSuffix = '${uniqueString(resourceGroup().id)}.dummy.net'
-var kvPitcherComAuName = 'dummy-kv-1'
-var kvMyPitcherComAuName = 'dummy-kv-${uniqueString(resourceGroup().id)}'
+var kvcompanyComAuName = 'dummy-kv-1'
+var kvMycompanyComAuName = 'dummy-kv-${uniqueString(resourceGroup().id)}'
 var kvName = 'dummy-kv-${uniqueString(resourceGroup().id)}'
-var myPitcherCertName = 'CERT_dummy.com'
-var myPitcherCertKeyVaultSecretName = 'DummyCert'
-var pitcherCertName = 'dummy.com-2025'
-var pitcherCertKeyVaultSecretName = 'dummycom-2025'
+var mycompanyCertName = 'CERT_dummy.com'
+var mycompanyCertKeyVaultSecretName = 'DummyCert'
+var companyCertName = 'dummy.com-2025'
+var companyCertKeyVaultSecretName = 'dummycom-2025'
 var domainVerificationId = 'DUMMY_VERIFICATION_ID'
 var userAssignedIdentitySub = 'dummy-subscription-id'
 var userAssignedIdentityName = 'dummy-identity'
@@ -39,8 +39,8 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   scope: resourceGroup(userAssignedIdentitySub, userAssignedIdentityRg)
 }
 
-resource kvMyPitcherComAu 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: kvMyPitcherComAuName
+resource kvMycompanyComAu 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: kvMycompanyComAuName
   scope: resourceGroup(subscription().subscriptionId, resourceGroupName)
 }
 
@@ -49,8 +49,8 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   scope: resourceGroup(subscription().subscriptionId, resourceGroupName)
 }
 
-resource pitcherCert 'Microsoft.Web/certificates@2024-04-01' = {
-  name: '${resourceGroup().name}-${kvPitcherComAuName}-${pitcherCertKeyVaultSecretName}'
+resource companyCert 'Microsoft.Web/certificates@2024-04-01' = {
+  name: '${resourceGroup().name}-${kvcompanyComAuName}-${companyCertKeyVaultSecretName}'
   location: location
   properties: {
     hostNames: [
@@ -58,20 +58,20 @@ resource pitcherCert 'Microsoft.Web/certificates@2024-04-01' = {
       'dummy.com'
     ]
     keyVaultId: vaults_pp_prd_ccert_as_kv_1_externalid
-    keyVaultSecretName: pitcherCertKeyVaultSecretName
+    keyVaultSecretName: companyCertKeyVaultSecretName
   }
 }
 
-resource myPitcherCert 'Microsoft.Web/certificates@2024-04-01' = {
-  name: '${kvMyPitcherComAuName}-${myPitcherCertKeyVaultSecretName}'
+resource mycompanyCert 'Microsoft.Web/certificates@2024-04-01' = {
+  name: '${kvMycompanyComAuName}-${mycompanyCertKeyVaultSecretName}'
   location: location
   properties: {
     hostNames: [
       '*.dummy.com'
       'dummy.com'
     ]
-    keyVaultId: kvMyPitcherComAu.id
-    keyVaultSecretName: myPitcherCertKeyVaultSecretName
+    keyVaultId: kvMycompanyComAu.id
+    keyVaultSecretName: mycompanyCertKeyVaultSecretName
   }
 }
 
@@ -95,11 +95,11 @@ var appsArray = [
   {
     appNamePrefix: 'dummyApp1'
     appDomainName: 'app1.dummy.com'
-    sslCertName: pitcherCertName
+    sslCertName: companyCertName
     backendAddress: 'app1-${defaultDomainSuffix}'
     backendSettingName: '${appGwHttpSettingNameCustomDomain}app1'
     customDomain: true
-    customDomainSslThumbprint: pitcherCert.properties.thumbprint
+    customDomainSslThumbprint: companyCert.properties.thumbprint
     private: true
     wwwRedirectListener: false
     customProbePath: '/'
@@ -118,7 +118,7 @@ var functionAppsArray = [
   {
     appNamePrefix: 'dummyFnApp1'
     appDomainName: 'fnapp1.dummy.com'
-    sslCertName: pitcherCertName
+    sslCertName: companyCertName
     functionsRuntime: '~4'
     functionsWorkerRuntime: 'dotnet'
     backendAddress: 'fnapp1-${defaultDomainSuffix}'
@@ -234,15 +234,15 @@ module main 'mainv2.bicep' = {
     ]
     sslCertificates: [
       {
-        name: pitcherCertName
+        name: companyCertName
         properties: {
-          keyVaultSecretId: '${vaults_pp_prd_ccert_as_kv_1_uri}/secrets/${pitcherCertKeyVaultSecretName}'
+          keyVaultSecretId: '${vaults_pp_prd_ccert_as_kv_1_uri}/secrets/${companyCertKeyVaultSecretName}'
         }
       }
       {
-        name: myPitcherCertName
+        name: mycompanyCertName
         properties: {
-          keyVaultSecretId: '${kvMyPitcherComAu.properties.vaultUri}secrets/${myPitcherCertKeyVaultSecretName}'
+          keyVaultSecretId: '${kvMycompanyComAu.properties.vaultUri}secrets/${mycompanyCertKeyVaultSecretName}'
         }
       }
     ]
