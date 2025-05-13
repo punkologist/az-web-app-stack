@@ -1,0 +1,32 @@
+name: Bicep Arm Deployment Pipeline Test
+
+parameters:
+- name: azureServiceConnection
+  type: string
+  default: 'pp-tst-appservices-sc'
+
+variables:
+  vmImageName: 'ubuntu-latest'
+  resourceGroupName: 'PP-TST-AppServices-rg'
+  location: 'Australia Southeast'
+  templateFile: './deploy-test.bicep'
+
+pool:
+  vmImage: $(vmImageName)
+
+steps:
+- bash: |
+    echo "##[debug]-version "$(Build.BuildNumber)" -gitCommit "$(Build.SourceVersion)" -builtBy "$(Build.RequestedForEmail)""
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    action: 'Create Or Update Resource Group'
+    azureResourceManagerConnection: '${{ parameters.azureServiceConnection }}'
+    resourceGroupName: '$(resourceGroupName)'
+    location: '$(location)'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(templateFile)'
+    overrideParameters: '-version "$(Build.BuildNumber)" -gitCommit "$(Build.SourceVersion)" -builtBy "$(Build.RequestedForEmail)"'
+    deploymentMode: 'Incremental'
+    deploymentName: 'DeployAppServicesTstPipelineTemplate'
+    subscriptionId: '923d30f5-7a82-4c1d-b5fa-8f441e23dd8b'  
